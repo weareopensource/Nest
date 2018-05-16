@@ -5,7 +5,6 @@ import {
   ManyToMany,
   JoinTable,
   PrimaryGeneratedColumn,
-  DiscriminatorColumn,
   CreateDateColumn,
   UpdateDateColumn,
   BaseEntity,
@@ -37,16 +36,16 @@ export class User {
   @UpdateDateColumn()
   updatedDate: Date;
 
-  @ManyToMany(type => Role, role => role.users, {
-    cascadeInsert: true,
-    cascadeUpdate: true,
+  @ManyToMany(type => Role, (role: Role) => role.users, {
+//    cascadeInsert: true,
+//    cascadeUpdate: true,
   })
   @JoinTable()
   roles: Role[];
 
-  @OneToMany(type => Command, command => command.user, {
-    cascadeInsert: true,
-    cascadeUpdate: true,
+  @OneToMany(type => Command, (command: Command) => command.user, {
+//    cascadeInsert: true,
+//    cascadeUpdate: true,
   })
   commands: Command[];
 }

@@ -1,9 +1,9 @@
 import { CommandDto } from './command.dto';
-import { Component } from '@nestjs/common';
-import { TypeOrmDatabaseService } from '../database/typeOrm.database.service';
+import { Injectable } from '@nestjs/common';
 import { Command } from './command.entity';
 import { Repository } from 'typeorm';
 import { Service } from '../common/service.interface';
+import { InjectRepository } from '@nestjs/typeorm';
 
 function commandDto(command: Command): CommandDto {
   const userId = command.user && command.user.id;
@@ -13,27 +13,26 @@ function commandDto(command: Command): CommandDto {
   return { ...command, mediaIds, userId } as CommandDto;
 }
 
-@Component()
+@Injectable()
 export class CommandsService {
 
-  constructor(private databaseService: TypeOrmDatabaseService) { }
-
-  private get repository(): Promise<Repository<Command>> {
-    return this.databaseService.getRepository(Command);
-  }
+  constructor(
+    @InjectRepository(Command)
+    private readonly repository: Repository<Command>,
+  ) { }
 
   private async seed() {
     const commandsRepository = await this.repository;
     const count = await commandsRepository.count();
     if (count === 0) {
 //            const commands = await commandsRepository.save([new Command('John Doe', 30), new Command('Jane Doe', 40)]);
-            console.log('Seeded Commands.');
+            // console.log('Seeded Commands.');
 //            console.log(commands);
     }
   }
 
   public async add(command: CommandDto): Promise<CommandDto> {
-    console.log('qsqsdqsqsdsqd', command);
+    // console.log('qsqsdqsqsdsqd', command);
     return (await this.repository).save(command);
   }
 
@@ -43,30 +42,31 @@ export class CommandsService {
 
   public async getAll(): Promise<any> {
     const repository = await this.repository;
-    const commands = await repository.find({ relations: ['user', 'medias'] })
+    const commands = await repository.find({ relations: ['user', 'medias'] });
     return { commands: commands.map(command => commandDto(command)) };
   }
 
   public async get(id: number): Promise<any> {
     return (await this.repository)
-    .findOneById(id, { relations: ['user', 'medias'] })
-    .then(command => commandDto(command));
+    .findByIds([id], { relations: ['user', 'medias'] })
+    .then((command: Array<Command>) => commandDto(command[0]));
   }
 
   public async update(commandId: number, changes: any): Promise<CommandDto> {
     const repository = (await this.repository);
-    let command = await repository.findOneById(commandId);
-    command = { ...command, ...changes }
+    let command = await repository.findByIds([commandId]);
+    command = { ...command, ...changes };
     return repository
     .save(command)
-    .then(savedCommand => commandDto(savedCommand));
+    .then((savedCommand: Array<Command>) => commandDto(savedCommand[0]));
   }
 
   public async remove(commandId: number): Promise<CommandDto> {
     const repository = (await this.repository);
-    const command = await repository.findOneById(commandId, { relations: ['user', 'medias'] });
+    const command = await repository.findByIds([commandId], { relations: ['user', 'medias'] });
     await repository.remove(command);
-    command.id = commandId
-    return commandDto(command);
+    const com = command[0];
+    com.id = commandId;
+    return commandDto(com);
   }
 }

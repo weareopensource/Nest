@@ -1,8 +1,8 @@
-import { Component } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConnectionOptions } from 'typeorm';
 import { TypeOrmDatabaseConfig } from '../database/typeOrm.database.config';
 
-@Component()
+@Injectable()
 export class AuthenticationDatabaseConfig extends TypeOrmDatabaseConfig {
 
   public getConfiguration(): ConnectionOptions {

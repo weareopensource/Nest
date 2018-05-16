@@ -1,22 +1,23 @@
 import { AuthenticationModule, AuthenticationMiddleware } from '../authentication/authentication.module';
-import { Module, NestModule, RequestMethod, MiddlewaresConsumer, OnModuleInit } from '@nestjs/common';
-import { MediasController, MediasService, MediaFindMiddleware } from './';
-import { DatabaseModule } from '../database/database.module';
+import { Module, NestModule, RequestMethod, MiddlewareConsumer, OnModuleInit } from '@nestjs/common';
+import { MediasController, MediasService, MediaFindMiddleware, Media } from './';
 import { MediaDatabaseConfig } from './media.database.config';
-import { TypeOrmDatabaseConfig } from '../database/typeOrm.database.config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Command } from '../commands';
 
 @Module({
-  modules: [ DatabaseModule ],
+  imports: [
+    TypeOrmModule.forFeature([Media, Command]),
+  ],
   controllers: [
     MediasController,
   ],
-  components: [
+  providers: [
     MediasService,
-    { provide: TypeOrmDatabaseConfig, useClass: MediaDatabaseConfig },
   ],
 })
 export class MediaModule implements NestModule {
-  public configure(consumer: MiddlewaresConsumer) {
+  public configure(consumer: MiddlewareConsumer) {
 //   consumer.apply(MediaFindMiddleware).forRoutes({
 //      path: 'medias/:id', method: RequestMethod.ALL,
 //    });

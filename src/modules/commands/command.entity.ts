@@ -31,15 +31,15 @@ export class Command {
     @UpdateDateColumn()
     updatedDate: Date;
 
-    @ManyToOne(type => User, user => user.commands, {
-      cascadeInsert: true,
-      cascadeUpdate: true,
+    @ManyToOne(type => User, (user: User) => user.commands, {
+//      cascadeInsert: true,
+//      cascadeUpdate: true,
     })
     user: User;
 
-    @OneToMany(type => Media, media => media.command, {
-      cascadeInsert: true,
-      cascadeUpdate: true,
+    @OneToMany(type => Media, (media: Media) => media.command, {
+//      cascadeInsert: true,
+//      cascadeUpdate: true,
     })
     medias: Media[];
 }

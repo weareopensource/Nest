@@ -3,7 +3,7 @@ import { verify } from 'jsonwebtoken';
 import { UserDto } from '../users/user.dto';
 import { Request, Response, NextFunction } from 'express';
 import { Middleware, NestMiddleware, HttpStatus } from '@nestjs/common';
-import { HttpException } from '@nestjs/core';
+import { HttpException } from '@nestjs/common';
 import { UsersService } from '..//users/users.service';
 import { Service } from '../common/service.interface';
 import { User } from '../users/user.entity';

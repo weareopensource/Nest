@@ -1,18 +1,17 @@
-import { Module, NestModule, RequestMethod, MiddlewaresConsumer, OnModuleInit } from '@nestjs/common';
-import { RolesController, RolesService } from '../roles';
-import { DatabaseModule } from '../database/database.module';
-import { TypeOrmDatabaseConfig } from '../database/typeOrm.database.config';
-import { RoleDatabaseConfig } from './role.database.config';
+import { Module, NestModule, RequestMethod, MiddlewareConsumer, OnModuleInit } from '@nestjs/common';
+import { RolesController, RolesService, Role } from './';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthenticationModule } from '../authentication/authentication.module';
 
 @Module({
-  modules: [ DatabaseModule ],
+  imports: [
+    TypeOrmModule.forFeature([Role]),
+  ],
   controllers: [
     RolesController,
   ],
-  components: [
+  providers: [
     RolesService,
-    { provide: TypeOrmDatabaseConfig, useClass: RoleDatabaseConfig },
   ],
 })
 export class RoleModule {

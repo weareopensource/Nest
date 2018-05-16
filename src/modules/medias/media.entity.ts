@@ -31,9 +31,9 @@ export class Media extends BaseEntity {
     @UpdateDateColumn()
     updatedDate: Date;
 
-    @ManyToOne(type => Command, command => command.medias, {
-      cascadeInsert: true,
-      cascadeUpdate: true,
+    @ManyToOne(type => Command, (command: Command) => command.medias, {
+//      cascadeInsert: true,
+//      cascadeUpdate: true,
     })
     command: Command;
 }

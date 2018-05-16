@@ -1,9 +1,9 @@
 import { UserDto } from './user.dto';
-import { Component } from '@nestjs/common';
-import { TypeOrmDatabaseService } from '../database/typeOrm.database.service';
+import { Injectable } from '@nestjs/common';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { Service } from '../common/service.interface';
+import { InjectRepository } from '@nestjs/typeorm';
 
 function userDto(user: User): UserDto {
   const roles = user.roles.map(role => role.name);
@@ -13,21 +13,20 @@ function userDto(user: User): UserDto {
   return { ...user, roles, commandIds } as UserDto;
 }
 
-@Component()
+@Injectable()
 export class UsersService {
 
-  constructor(private databaseService: TypeOrmDatabaseService) { }
-
-  private get repository(): Promise<Repository<User>> {
-    return this.databaseService.getRepository(User);
-  }
+  constructor(
+    @InjectRepository(User)
+    private readonly repository: Repository<User>,
+  ) { }
 
   private async seed() {
     const usersRepository = await this.repository;
     const count = await usersRepository.count();
     if (count === 0) {
 //            const users = await usersRepository.save([new User('John Doe', 30), new User('Jane Doe', 40)]);
-            console.log('Seeded Users.');
+            // console.log('Seeded Users.');
 //            console.log(users);
     }
   }

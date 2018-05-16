@@ -1,8 +1,7 @@
 import { User } from '../users/user.entity';
 import { Repository } from 'typeorm';
-import { TypeOrmDatabaseService } from './../database/typeOrm.database.service';
-import { Component, forwardRef, Inject } from '@nestjs/common';
-import { HttpException } from '@nestjs/core';
+import { Injectable, forwardRef, Inject } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 // import { hash } from 'argon2';
 import { sign, SignOptions, verify } from 'jsonwebtoken';
 import { readFileSync } from 'fs';
@@ -15,7 +14,7 @@ import { UsersService } from '../users/users.service';
 const RSA_PRIVATE_KEY = readFileSync(resolve(__dirname, 'certs/private.key'));
 const EXPIRES_IN = 24 * 60 * 60;
 
-@Component()
+@Injectable()
 export class AuthenticationService {
   constructor(private readonly usersService: UsersService) {}
 

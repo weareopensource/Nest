@@ -1,22 +1,21 @@
 import { AuthenticationModule, AuthenticationMiddleware } from '../authentication/authentication.module';
-import { Module, NestModule, RequestMethod, MiddlewaresConsumer, OnModuleInit } from '@nestjs/common';
-import { CommandsController, CommandsService, CommandFindMiddleware } from './';
-import { DatabaseModule } from '../database/database.module';
-import { CommandDatabaseConfig } from './command.database.config';
-import { TypeOrmDatabaseConfig } from '../database/typeOrm.database.config';
+import { Module, NestModule, RequestMethod, MiddlewareConsumer, OnModuleInit } from '@nestjs/common';
+import { CommandsController, CommandsService, CommandFindMiddleware, Command } from './';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  modules: [ DatabaseModule ],
+  imports: [
+    TypeOrmModule.forFeature([Command]),
+  ],
   controllers: [
     CommandsController,
   ],
-  components: [
+  providers: [
     CommandsService,
-    { provide: TypeOrmDatabaseConfig, useClass: CommandDatabaseConfig },
   ],
 })
 export class CommandModule /* implements NestModule */ {
-  public configure(consumer: MiddlewaresConsumer) {
+  public configure(consumer: MiddlewareConsumer) {
 //    consumer.apply(CommandFindMiddleware).forRoutes({
 //      path: 'commands/:id', method: RequestMethod.ALL,
 //    });

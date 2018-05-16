@@ -1,10 +1,10 @@
 import { CommandDto } from './command.dto';
-import { Middleware, NestMiddleware, HttpStatus } from '@nestjs/common';
-import { HttpException } from '@nestjs/core';
+import { Middleware, NestMiddleware, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 import { CommandsService } from './commands.service';
 import { Command } from './command.entity';
 
-@Middleware()
+@Injectable()
 export class CommandFindMiddleware implements NestMiddleware {
 
   constructor(private commandsService: CommandsService) { }

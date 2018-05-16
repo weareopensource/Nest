@@ -14,8 +14,8 @@ import * as helmet from 'helmet';
 
 async function bootstrap() {
   const httpsOptions = {
-    key: fs.readFileSync('../certs/key.pem'),
-    cert: fs.readFileSync('../certs/cert.pem'),
+    key: fs.readFileSync('./certs/key.pem'),
+    cert: fs.readFileSync('./certs/cert.pem'),
   };
   const corsOptions = {
     origin: ['http://localhost:4200', 'https://localhost:4200'],

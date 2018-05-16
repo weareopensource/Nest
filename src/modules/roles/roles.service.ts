@@ -1,9 +1,9 @@
 import { RoleDto } from './role.dto';
-import { Component } from '@nestjs/common';
-import { TypeOrmDatabaseService } from '../database/typeOrm.database.service';
+import { Injectable } from '@nestjs/common';
 import { Role } from './role.entity';
 import { Repository } from 'typeorm';
 import { Service } from '../common/service.interface';
+import { InjectRepository } from '@nestjs/typeorm';
 
 function roleDto(role: Role): RoleDto {
   const userIds = role.users.map(user => user.id);
@@ -11,21 +11,20 @@ function roleDto(role: Role): RoleDto {
   return { ...role, userIds } as RoleDto;
 }
 
-@Component()
+@Injectable()
 export class RolesService implements Service<RoleDto> {
 
-  constructor(private databaseService: TypeOrmDatabaseService) { }
-
-  private get repository(): Promise<Repository<Role>> {
-    return this.databaseService.getRepository(Role);
-  }
+  constructor(
+    @InjectRepository(Role)
+    private readonly repository: Repository<Role>,
+  ) { }
 
   private async seed() {
     const rolesRepository = await this.repository;
     const count = await rolesRepository.count();
     if (count === 0) {
 //            const roles = await rolesRepository.save([new Role('John Doe', 30), new Role('Jane Doe', 40)]);
-            console.log('Seeded Roles.');
+      // console.log('Seeded Roles.');
 //            console.log(roles);
     }
   }
@@ -46,8 +45,8 @@ export class RolesService implements Service<RoleDto> {
 
   public async get(id: number): Promise<any> {
     return (await this.repository)
-    .findOneById(id, { relations: ['users'] })
-    .then(role => roleDto(role));
+    .findByIds([id], { relations: ['users'] })
+    .then(((role: Array<Role>) => roleDto(role[0])));
   }
 
   public async update(role: Role): Promise<RoleDto> {

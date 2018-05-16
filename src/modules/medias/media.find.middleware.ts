@@ -1,10 +1,10 @@
 import { MediaDto } from './media.dto';
-import { Middleware, NestMiddleware, HttpStatus } from '@nestjs/common';
-import { HttpException } from '@nestjs/core';
+import { Middleware, NestMiddleware, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 import { MediasService } from './medias.service';
 import { Media } from './media.entity';
 
-@Middleware()
+@Injectable()
 export class MediaFindMiddleware implements NestMiddleware {
 
   constructor(private readonly mediasService: MediasService) { }
