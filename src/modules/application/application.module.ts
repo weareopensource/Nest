@@ -14,7 +14,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      name: 'command',
       type: 'postgres',
       host: process.env.DB_HOST,
       port: Number(process.env.DB_PORT),
@@ -26,10 +25,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     }),
     CommonModule,
     UserModule,
-//    RoleModule,
-//    AuthenticationModule,
-//    CommandModule,
-//    MediaModule,
+    RoleModule,
+    AuthenticationModule,
+    CommandModule,
+    MediaModule,
   ],
 })
 export class ApplicationModule {
