@@ -7,8 +7,7 @@ import { RoleModule } from '../roles/role.module';
 import { CommonModule } from '../common/common.module';
 import { UserModule } from '../users/user.module';
 // import * as csurf from 'csurf';
-import { CommandModule } from '../commands/commands.module';
-import { MediaModule } from '../medias/medias.module';
+import { TaskModule } from '../tasks/tasks.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
@@ -27,8 +26,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     UserModule,
     RoleModule,
     AuthenticationModule,
-    CommandModule,
-    MediaModule,
+    TaskModule,
   ],
 })
 export class ApplicationModule {

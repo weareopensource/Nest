@@ -9,7 +9,7 @@ import {
   UpdateDateColumn,
   BaseEntity,
 } from 'typeorm';
-import { Command } from '../commands/command.entity';
+import { Task } from '../tasks/task.entity';
 import { Role } from '../roles/role.entity';
 
 @Entity()
@@ -43,9 +43,9 @@ export class User {
   @JoinTable()
   roles: Role[];
 
-  @OneToMany(type => Command, (command: Command) => command.user, {
+  @OneToMany(type => Task, (task: Task) => task.user, {
 //    cascadeInsert: true,
 //    cascadeUpdate: true,
   })
-  commands: Command[];
+  tasks: Task[];
 }

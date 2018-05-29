@@ -12,7 +12,7 @@ import * as express from 'express';
 import * as cors from 'cors';
 import * as helmet from 'helmet';
 
-async function bootstrap() {
+(async function bootstrap() {
   const httpsOptions = {
     key: fs.readFileSync('./certs/key.pem'),
     cert: fs.readFileSync('./certs/cert.pem'),
@@ -23,17 +23,17 @@ async function bootstrap() {
     credentials: true,
   };
   const expressInstance = express();
-  expressInstance.disable('x-powered-by');
-  expressInstance.use(helmet());
-  expressInstance.use(cors(corsOptions));
-  expressInstance.use(bodyParser.json({limit: '50mb'}));
-  expressInstance.use(cookieParser());
 
 //  const app2 = await NestFactory.create(ApplicationModule);
 //  await app2.listen(3001);
 
   const app = await NestFactory.create(ApplicationModule, expressInstance);
   app.setGlobalPrefix('/api');
+  app.disable('x-powered-by');
+  app.use(helmet());
+  app.use(cors(corsOptions));
+  app.use(bodyParser.json({limit: '50mb'}));
+  app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new HttpExceptionFilter(), new ErrorExceptionFilter());
 
@@ -50,8 +50,8 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/swagger', app, document);
+  app.init();
 
   await https.createServer(httpsOptions, expressInstance).listen(3000);
-  app.init();
-}
-bootstrap();
+
+})();

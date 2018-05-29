@@ -8,9 +8,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 function userDto(user: User): UserDto {
   const roles = user.roles.map(role => role.name);
   delete user.roles;
-  const commandIds = user.commands.map(command => command.id);
-  delete user.commands;
-  return { ...user, roles, commandIds } as UserDto;
+  const taskIds = user.tasks.map(task => task.id);
+  delete user.tasks;
+  return { ...user, roles, taskIds } as UserDto;
 }
 
 @Injectable()
@@ -41,13 +41,13 @@ export class UsersService {
 
   public async getAll(): Promise<any> {
     return (await this.repository)
-    .find({ relations: ['commands', 'roles'] })
+    .find({ relations: ['tasks', 'roles'] })
     .then(users => ({ users: users.map(user => userDto(user)) }));
   }
 
   public async get(email: string): Promise<any> {
     return (await this.repository)
-    .findOne({ where: { email }, relations: ['commands', 'roles'] })
+    .findOne({ where: { email }, relations: ['tasks', 'roles'] })
     .then(user => userDto(user));
   }
 
