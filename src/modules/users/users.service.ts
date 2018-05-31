@@ -4,62 +4,71 @@ import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { Service } from '../common/service.interface';
 import { InjectRepository } from '@nestjs/typeorm';
-
-function userDto(user: User): UserDto {
-  const roles = user.roles.map(role => role.name);
-  delete user.roles;
-  const taskIds = user.tasks.map(task => task.id);
-  delete user.tasks;
-  return { ...user, roles, taskIds } as UserDto;
-}
+import { Role } from '../roles';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class UsersService {
 
   constructor(
     @InjectRepository(User)
-    private readonly repository: Repository<User>,
+    private readonly userRepository: Repository<User>,
+    @InjectRepository(Role)
+    private readonly roleRepository: Repository<Role>,
   ) { }
 
-  private async seed() {
-    const usersRepository = await this.repository;
-    const count = await usersRepository.count();
-    if (count === 0) {
-//            const users = await usersRepository.save([new User('John Doe', 30), new User('Jane Doe', 40)]);
-            // console.log('Seeded Users.');
-//            console.log(users);
-    }
+  public async insert(user: any): Promise<any> {
+    const defaultRole = await (await this.roleRepository).findOne({ name: 'user' });
+    const newUser = { ...user, roleIds: [ defaultRole.id ], provider: 'local', profileImageURL: '/assets/ic_profile.png' };
+    return this.userRepository.insert(newUser)
+    .then(async (result: any) => {
+      delete newUser.passwordDigest;
+      return {...newUser, role: 'user', id: result.identifiers[0].id };
+    });
+
   }
 
-  public async add(user: any): Promise<UserDto> {
-    return (await this.repository).save(user);
+  public async findOne(id: string): Promise<any> {
+    const user = await (await this.userRepository).findOne({ _id: new ObjectId(id) } as any);
+    const userRoles = await (await this.roleRepository).findByIds(user.roleIds);
+    delete user.passwordDigest;
+    delete user.roleIds;
+    return { ...user, roles: userRoles.map(role => role.name) };
   }
 
-  public async addAll(users: UserDto[]): Promise<any[]> {
-    return (await this.repository).save(users);
+  public async findOneByEmail(email: string): Promise<any> {
+    const user = await (await this.userRepository).findOne({ email });
+    const userRoles = await (await this.roleRepository).findByIds(user.roleIds);
+    delete user.roleIds;
+    return { ...user, roles: userRoles.map(role => role.name) };
   }
 
-  public async getAll(): Promise<any> {
-    return (await this.repository)
-    .find({ relations: ['tasks', 'roles'] })
-    .then(users => ({ users: users.map(user => userDto(user)) }));
+  public async update(id: string, userId: string, update: any): Promise<any> {
+    const newRolesP = update.roles.map(async role => (await this.roleRepository).findOne({ name: role } as any));
+    const newRoleIds = (await Promise.all(newRolesP)).map((role: any) => role.id);
+    const user = await (await this.userRepository).findOneOrFail({ _id: new ObjectId(id) } as any).catch(console.log);
+    (user as any).roleIds =  newRoleIds;
+    (user as any).profileImageURL =  update.profileImageURL;
+    (user as any).firstName =  update.firstName;
+    (user as any).lastName =  update.lastName;
+    (user as any).email =  update.email;
+    return (await this.userRepository).save((user as any)).then(() => { (user as any).roles = update.roles; return user; });
   }
 
-  public async get(email: string): Promise<any> {
-    return (await this.repository)
-    .findOne({ where: { email }, relations: ['tasks', 'roles'] })
-    .then(user => userDto(user));
+  public async delete(id: string): Promise<any> {
+    return (await this.userRepository).delete({ _id: new ObjectId(id) } as any).then(() => ({ id }));
   }
 
-  public async update(user: User): Promise<UserDto> {
-    return (await this.repository)
-    .save(user)
-    .then(savedUser => userDto(savedUser));
+  public async findAll(): Promise<any> {
+    const users = await (await this.userRepository).find();
+    const usersP = users.map(async (user: any) => {
+      delete user.passwordDigest;
+      const userRolesP = user.roleIds.map(async (roleId) => (await (await this.roleRepository).findOne({ _id: new ObjectId(roleId) } as any)).name);
+      const userRoles = await Promise.all(userRolesP);
+      delete user.roleIds;
+      return { ...user, roles: userRoles };
+    });
+    return await Promise.all(usersP);
   }
 
-  public async remove(user: User): Promise<UserDto> {
-    return (await this.repository)
-    .remove(user)
-    .then(removedUser => userDto(removedUser));
-  }
 }

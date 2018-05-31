@@ -1,24 +1,27 @@
-import * as passport from 'passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { Injectable, Inject } from '@nestjs/common';
-import { AuthenticationService } from '../authentication.service';
+import { Strategy } from 'passport-jwt';
+import { UsersService } from '../../users/users.service';
+import { PassportStrategy } from '@nestjs/passport';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+
+import { JwtPayload } from '../interfaces/jwt-payload.interface';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
 
 @Injectable()
-export class JwtStrategy extends Strategy {
-  constructor(private readonly authService: AuthenticationService) {
+export class JwtStrategy extends PassportStrategy(Strategy) {
+  constructor(private readonly usersService: UsersService) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      passReqToCallback: true,
-      secretOrKey: 'secret',
-    }, async (req, payload, next) => await this.verify(req, payload, next));
-    passport.use(this);
+      jwtFromRequest: (req) => req && req.cookies && req.cookies.TOKEN,
+      secretOrKey: readFileSync(resolve(__dirname, 'certs/public.key')),
+});
   }
 
-  public async verify(req, payload, done) {
-    const isValid = await this.authService.validateUser(payload);
-    if (!isValid) {
-      return done('Unauthorized', false);
+  // tslint:disable-next-line:ban-types
+  public async validate(token: any, done: Function) {
+    const user = await this.usersService.findOne(token.userId).catch(console.error);
+    if (!user) {
+      return done(new UnauthorizedException(), false);
     }
-    done(null, payload);
+    done(false, user);
   }
 }

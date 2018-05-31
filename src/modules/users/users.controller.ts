@@ -10,23 +10,20 @@ import { UsersService } from './users.service';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { ApiUseTags } from '@nestjs/swagger';
 import { ParseIntPipe } from '../common/pipes/parse-int.pipe';
+import { AuthGuard } from '@nestjs/passport';
 
-@ApiUseTags('users')
+// @ApiUseTags('users')
+// @UseGuards(RolesGuard)
 @Controller('users')
-@UseGuards(RolesGuard)
 export class UsersController {
 
   constructor(private readonly usersService: UsersService) { }
 
   @Get('me')
-  public async getCurrentUser(@Request() request, @Param('id', new ParseIntPipe()) id) {
-    return request.user;
+  public async getCurrentUser(@Request() request, @Param('id') id: string) {
+    return this.usersService.findOne(id);
   }
 
-  @Put()
-  public async modifyUser(@Request() request, @Param('id', new ParseIntPipe()) id) {
-    return request.user;
-  }
 /*
   @Delete('accounts')
   public async deleteUser(@Request() request, @Param('id', new ParseIntPipe()) id) {
@@ -39,23 +36,22 @@ export class UsersController {
   }
 */
   @Post('password')
-  public async changePassword(@Request() request, @Param('id', new ParseIntPipe()) id) {
+  public async changePassword(@Request() request, @Param('id') id: string) {
     return request.user;
   }
 
   @Post('picture')
-  public async changePicture(@Request() request, @Param('id', new ParseIntPipe()) id) {
+  public async changePicture(@Request() request, @Param('id') id: string) {
     return request.user;
   }
 
-  @Get()
-  @Roles('admin')
+  @Get('')
+  // @Roles('admin')
   public async getAllUsers() {
-    return this.usersService.getAll();
+    return this.usersService.findAll();
   }
 /*
   @Post()
-  @Roles('admin')
   @UsePipes(new ValidationPipe())
   public async addUser(@Body('user') user) {
     return this.usersService.add(user);
@@ -63,19 +59,21 @@ export class UsersController {
 */
 
   @Get(':id')
-  public async getUser(@Request() request, @Param('id', new ParseIntPipe()) id) {
-    return request.user;
+  //  @Roles('admin')
+  public async getUser(@Param('id') id: string) {
+    return this.usersService.findOne(id);
   }
-/*
+
   @Put(':id')
-  @UsePipes(new ValidationPipe())
-  public async modifyUser(@Request() request, @Body('user') user) {
-    return this.usersService.update(request.user);
+  @UseGuards(AuthGuard('jwt'))
+  public async updateUser(@Param('id') id: string, @Request() request: any, @Body() user: any) {
+    return this.usersService.update(id, request.user.id, user);
   }
-*/
+
   @Delete(':id')
-  public async deleteUser(@Request() request, @Param('id', new ParseIntPipe()) id) {
-    return this.usersService.remove(request.user);
+//  @Roles('admin')
+  public async deleteUser(@Param('id') id: string) {
+    return this.usersService.delete(id);
   }
 }
 

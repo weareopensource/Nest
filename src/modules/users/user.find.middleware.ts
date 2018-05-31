@@ -15,11 +15,11 @@ export class UserFindMiddleware implements NestMiddleware {
         throw new HttpException({ error: 'Oops, something went wrong.' }, HttpStatus.INTERNAL_SERVER_ERROR);
       }
 
-      const user = await this.usersService.get(req.params.id);
-      if (!user) {
-        throw new HttpException('User not found.', 404);
-      }
-      req.user = user;
+//      const user = await this.usersService.get(req.params.id);
+//      if (!user) {
+//        throw new HttpException('User not found.', 404);
+//      }
+//      req.user = user;
       next();
     };
   }

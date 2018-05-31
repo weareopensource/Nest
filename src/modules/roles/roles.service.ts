@@ -5,14 +5,8 @@ import { Repository } from 'typeorm';
 import { Service } from '../common/service.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 
-function roleDto(role: Role): RoleDto {
-  const userIds = role.users.map(user => user.id);
-  delete role.users;
-  return { ...role, userIds } as RoleDto;
-}
-
 @Injectable()
-export class RolesService implements Service<RoleDto> {
+export class RolesService implements Service<Role> {
 
   constructor(
     @InjectRepository(Role)
@@ -29,35 +23,33 @@ export class RolesService implements Service<RoleDto> {
     }
   }
 
-  public async add(role: RoleDto): Promise<RoleDto> {
+  public async add(role: Role): Promise<Role> {
     return (await this.repository).save(role);
   }
 
-  public async addAll(roles: RoleDto[]): Promise<any[]> {
+  public async addAll(roles: Role[]): Promise<any[]> {
     return (await this.repository).save(roles);
   }
 
   public async getAll(): Promise<any> {
     return (await this.repository)
-    .find({ relations: ['users'] })
-    .then(roles => ({ roles: roles.map(role => roleDto(role)) }));
+    .find({ relations: ['users'] });
   }
 
   public async get(id: number): Promise<any> {
     return (await this.repository)
     .findByIds([id], { relations: ['users'] })
-    .then(((role: Array<Role>) => roleDto(role[0])));
+    .then(((role: Array<Role>) => role[0]));
   }
 
-  public async update(role: Role): Promise<RoleDto> {
+  public async update(role: Role): Promise<Role> {
     return (await this.repository)
     .save(role)
-    .then(savedRole => roleDto(savedRole));
+    .then(savedRole => savedRole);
   }
 
-  public async remove(role: Role): Promise<RoleDto> {
+  public async remove(role: Role): Promise<Role> {
     return (await this.repository)
-    .remove(role)
-    .then(removedRole => roleDto(removedRole));
+    .remove(role);
   }
 }

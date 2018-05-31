@@ -38,20 +38,20 @@ import * as helmet from 'helmet';
   app.useGlobalFilters(new HttpExceptionFilter(), new ErrorExceptionFilter());
 
   const options = new DocumentBuilder()
-    .setTitle('Prothesist')
-    .setDescription('The prothesist API description')
+    .setTitle('meanie')
+    .setDescription('The meanie API description')
     .setVersion('1.0')
     .setSchemes('https')
     .addTag('authentication')
     .addTag('users')
-    .addTag('roles')
-    .addTag('commands')
+    .addTag('tasks')
     .addTag('medias')
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/swagger', app, document);
   app.init();
 
-  await https.createServer(httpsOptions, expressInstance).listen(3000);
+//  await https.createServer(httpsOptions, expressInstance).listen(3000);
+  await http.createServer(expressInstance).listen(3000);
 
 })();

@@ -1,12 +1,14 @@
 import {
     Column,
     Entity,
+    ManyToOne,
     OneToMany,
     ManyToMany,
     PrimaryGeneratedColumn,
     CreateDateColumn,
     UpdateDateColumn,
     BaseEntity,
+    JoinColumn,
     ObjectIdColumn,
     ObjectID,
 } from 'typeorm';
@@ -14,18 +16,27 @@ import { User } from '../users/user.entity';
 import { Moment } from 'moment';
 
 @Entity()
-export class Role {
+export class Task {
 
   @ObjectIdColumn()
   id: ObjectID;
 
-  @Column()
-  name: string;
+  @Column({ nullable: true })
+  title: string;
 
-  @CreateDateColumn({ nullable: true })
+  @Column({ nullable: true })
+  description: string;
+
+  @CreateDateColumn({
+    select: false,
+  })
   createdDate: Moment;
 
-  @UpdateDateColumn({ nullable: true })
+  @UpdateDateColumn({
+    select: false,
+  })
   updatedDate: Moment;
 
+  @ObjectIdColumn()
+  userId: ObjectID;
 }

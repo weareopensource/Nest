@@ -2,53 +2,60 @@ import { User } from '../users/user.entity';
 import { Repository } from 'typeorm';
 import { Injectable, forwardRef, Inject } from '@nestjs/common';
 import { HttpException } from '@nestjs/common';
-// import { hash } from 'argon2';
+import { hash } from 'argon2';
 import { sign, SignOptions, verify } from 'jsonwebtoken';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 import { UsersService } from '../users/users.service';
-
+import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { verify as verifyArgon2 } from 'argon2';
+import { LoginDto } from './login.dto';
 //     const publicKey = fs.readFileSync('./public.key');
 //     const verify = jwt.verify(token, publicKey);
 
-const RSA_PRIVATE_KEY = readFileSync(resolve(__dirname, 'certs/private.key'));
+const RSA_PRIVATE_KEY = readFileSync(resolve(__dirname, 'passport/certs/private.key'));
 const EXPIRES_IN = 24 * 60 * 60;
 
 @Injectable()
 export class AuthenticationService {
   constructor(private readonly usersService: UsersService) {}
 
-  public login(email: string, password: string): Promise<any> {
-    if (!email) {
+  public async login(credentials: LoginDto): Promise<any> {
+    if (!credentials.email) {
       throw new HttpException('Email is required', 422);
     }
-    if (!password) {
+    if (!credentials.password) {
       throw new HttpException('Password is required', 422);
     }
-    return this.usersService.get(email)
-    .then((user: any) => {
-      const token = this.createToken(user);
-      const expiresIn = JSON.parse(new Buffer(token.split('.')[1], 'base64').toString('ascii')).exp;
-      return { token, user, tokenExpiresIn: expiresIn };
-    });
+
+    const user = await this.usersService.findOneByEmail(credentials.email);
+
+    const isPasswordValid = await verifyArgon2(user.passwordDigest, credentials.password);
+
+    if (!isPasswordValid) {
+      throw new HttpException('Password is invalid', 422);
+    }
+
+    delete user.passwordDigest;
+
+    return user;
   }
 
-  public register(firstName: string, email: string, password: string) {
-//    const passwordDigest = await hash(password);
-    return this.usersService.add({ firstName, email, password });
+  public async register({ firstName, lastName, email, password }: any) {
+    const passwordDigest = await hash(password);
+    return this.usersService.insert({ firstName, lastName, email, passwordDigest });
   }
 
-  createToken(user: any) {
-    return sign({user: user.email}, RSA_PRIVATE_KEY, {
+  public createToken(user: any) {
+    return sign({ userId: user.id }, RSA_PRIVATE_KEY, {
       algorithm: 'RS256',
       expiresIn: EXPIRES_IN,
       subject: '1',
     } as SignOptions);
   }
 
-  async validateUser(signedUser): Promise<boolean> {
-    // put some validation logic here
-    // for example query user by id / email / username
-    return true;
+  async validateUser(payload: JwtPayload): Promise<any> {
+    return {};
   }
+
 }

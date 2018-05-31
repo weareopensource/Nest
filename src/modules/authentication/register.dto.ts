@@ -1,10 +1,7 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 import { IsString, IsInt, IsArray } from 'class-validator';
 
-export class UserDto {
-  @ApiModelProperty()
-  @IsInt()
-  readonly id?: string;
+export class RegisterDto {
 
   @ApiModelProperty()
   @IsString()
@@ -19,6 +16,6 @@ export class UserDto {
   readonly email?: string;
 
   @ApiModelProperty()
-  @IsArray()
-  readonly roles?: string[];
+  @IsString()
+  readonly password?: string;
 }

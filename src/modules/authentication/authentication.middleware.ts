@@ -10,7 +10,7 @@ import { User } from '../users/user.entity';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
-const RSA_PUBLIC_KEY = readFileSync(resolve(__dirname, 'certs/public.key'));
+const RSA_PUBLIC_KEY = readFileSync(resolve(__dirname, 'passport/certs/public.key'));
 
 export const AuthenticationMiddleware = (req, res, next) => {
   try {
