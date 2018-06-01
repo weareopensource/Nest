@@ -1,6 +1,5 @@
 import { UsersController } from '../users/users.controller';
 import { AuthenticationController } from './../authentication/authentication.controller';
-import { AuthenticationMiddleware } from './../authentication/authentication.middleware';
 import { AuthenticationModule } from '../authentication/authentication.module';
 import { Module, RequestMethod, MiddlewareConsumer } from '@nestjs/common';
 import { RoleModule } from '../roles/role.module';
@@ -37,7 +36,7 @@ export class ApplicationModule {
 
     consumer
     .apply([
-      AuthenticationMiddleware,
+//      AuthenticationMiddleware,
 //      csurf({ cookie: { key: 'XSRF-TOKEN'} }),
     ])
     .forRoutes(

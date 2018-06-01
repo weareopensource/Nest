@@ -1,8 +1,9 @@
 import { AuthenticationService } from './authentication.service';
-import { Controller, Get, Post, Res, Req, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Res, Req, Body, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
 import { ApiUseTags } from '@nestjs/swagger';
 import { LoginDto } from './login.dto';
 import { RegisterDto } from './register.dto';
+import { AuthGuard } from '@nestjs/passport';
 // import * as csurf from 'csurf';
 
 @ApiUseTags('authentication')
@@ -12,20 +13,20 @@ export class AuthenticationController {
   constructor(private authService: AuthenticationService) {}
 
   @Post('signin')
-  public async login(@Res() response, @Body() credentials: LoginDto) {
-    const user = await this.authService.login(credentials);
-    const token = this.authService.createToken(user);
+  @UseGuards(AuthGuard('local'))
+  public async login(@Req() request, @Res() response) {
+    const token = this.authService.createToken(request.user);
     const tokenExpiresIn = JSON.parse(new Buffer(token.split('.')[1], 'base64').toString('ascii')).exp;
 
     return response
     .cookie('TOKEN', token, {
-      maxAge: 1900000,
+//      maxAge: 1900000,
       httpOnly: true,
   //    secure: true,
     })
 //      .cookie('XSRF-TOKEN', request.csrfToken())
     .status(HttpStatus.OK)
-    .send({ user, tokenExpiresIn });
+    .send({ user: request.user, tokenExpiresIn });
   }
 
   @Post('signup')
@@ -37,7 +38,7 @@ export class AuthenticationController {
     const tokenExpiresIn = JSON.parse(new Buffer(token.split('.')[1], 'base64').toString('ascii')).exp;
     return response
 //      .cookie('_token', token, { maxAge: 900000, httpOnly: true, secure: true })
-      .cookie('TOKEN', token, { maxAge: 900000, httpOnly: true })
+      .cookie('TOKEN', token, { /*maxAge: 900000,*/ httpOnly: true })
       .status(HttpStatus.CREATED)
       .send({ user: registeredUser, tokenExpiresIn });
   }
@@ -57,37 +58,9 @@ export class AuthenticationController {
 
   }
 
+  @Post('microsoft')
+  @UseGuards(AuthGuard('azuread-openidconnect'))
+  public async microsoftLogin(@Req() request) {
+    console.log('user', request.user);
+  }
 }
-
-/**
- *
- *
- *
-  var users = require('../controllers/users.server.controller');
-
-  // Setting up the users password api
-  app.route('/api/auth/forgot').post(users.forgot);
-  app.route('/api/auth/reset/:token').get(users.validateResetToken);
-  app.route('/api/auth/reset').post(users.reset);
-
-  app.route('/api/auth/signup').post(users.signup)
-  app.route('/api/auth/signin').post(passport.authenticate('local'), users.signin)
-  app.route('/api/auth/signout').post(users.signout)
-
-  // Jwt token
-  app.route('/api/auth/token').post(users.token)
-  // Jwt protected route example:
-  // app.route('/api/auth/secretPlace').get(passport.authenticate('jwt'), (req, res) => {
-  //   console.log(req.user)
-  //   console.log(req.isAuthenticated())
-  //   res.status(200).send()
-  // })
-
-  // Setting the oauth routes
-  app.route('/api/auth/:strategy').get(users.oauthCall)
-  app.route('/api/auth/:strategy/callback').get(users.oauthCallback)
- *
- *
- *
- *
- */

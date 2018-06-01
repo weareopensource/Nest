@@ -6,6 +6,7 @@ import { Service } from '../common/service.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from '../roles';
 import { ObjectId } from 'mongodb';
+import { isEmpty } from 'lodash';
 
 @Injectable()
 export class UsersService {
@@ -24,7 +25,7 @@ export class UsersService {
     .then(async (result: any) => {
       delete newUser.passwordDigest;
       return {...newUser, role: 'user', id: result.identifiers[0].id };
-    });
+    }).catch(console.log);
 
   }
 
@@ -41,6 +42,16 @@ export class UsersService {
     const userRoles = await (await this.roleRepository).findByIds(user.roleIds);
     delete user.roleIds;
     return { ...user, roles: userRoles.map(role => role.name) };
+  }
+
+  public async findOneBySub(sub: string): Promise<any> {
+    const user = await (await this.userRepository).findOne({ sub });
+    if (!isEmpty(user)) {
+      const userRoles = await (await this.roleRepository).findByIds(user.roleIds);
+      delete user.roleIds;
+      return { ...user, roles: userRoles.map(role => role.name) };
+    }
+    return {};
   }
 
   public async update(id: string, userId: string, update: any): Promise<any> {

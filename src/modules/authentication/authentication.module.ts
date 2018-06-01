@@ -1,13 +1,11 @@
-import { AuthenticationMiddleware } from './authentication.middleware';
-export  { AuthenticationMiddleware };
-import { JwtStrategy } from './passport/jwt.strategy';
-import * as passport from 'passport';
 // import * as csurf from 'csurf';
-import { AuthenticationDatabaseConfig } from './authentication.database.config';
-import { Module, MiddlewareConsumer, RequestMethod, NestMiddleware, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AuthenticationController } from './authentication.controller';
 import { AuthenticationService } from './authentication.service';
 import { UserModule } from '../users/user.module';
+import { LocalStrategy } from './passport/local.strategy';
+import { JwtStrategy } from './passport/jwt.strategy';
+import { MsalStrategy } from './passport/msal.strategy';
 
 @Module({
   imports: [ UserModule ],
@@ -15,14 +13,8 @@ import { UserModule } from '../users/user.module';
   providers: [
     AuthenticationService,
     JwtStrategy,
+    LocalStrategy,
+    MsalStrategy,
   ],
 })
-export class AuthenticationModule implements NestModule {
-
-  public configure(consumer: MiddlewareConsumer) {
- //   consumer
-//      .apply(passport.authenticate('jwt', { session: false }))
-//      .forRoutes({ path: '/auth/authorized', method: RequestMethod.ALL });
-
-  }
-}
+export class AuthenticationModule { }

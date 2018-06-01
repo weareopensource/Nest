@@ -1,4 +1,3 @@
-import { AuthenticationModule, AuthenticationMiddleware } from '../authentication/authentication.module';
 import { Module, NestModule, RequestMethod, MiddlewareConsumer, OnModuleInit } from '@nestjs/common';
 import { TasksController, TasksService, TaskFindMiddleware, Task } from './';
 import { TypeOrmModule } from '@nestjs/typeorm';

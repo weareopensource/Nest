@@ -12,7 +12,7 @@ import { ApiUseTags } from '@nestjs/swagger';
 import { ParseIntPipe } from '../common/pipes/parse-int.pipe';
 import { AuthGuard } from '@nestjs/passport';
 
-// @ApiUseTags('users')
+@ApiUseTags('users')
 // @UseGuards(RolesGuard)
 @Controller('users')
 export class UsersController {
@@ -24,17 +24,6 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-/*
-  @Delete('accounts')
-  public async deleteUser(@Request() request, @Param('id', new ParseIntPipe()) id) {
-    return request.user;
-  }
-
-  @Post('accounts')
-  public async addUser(@Request() request, @Param('id', new ParseIntPipe()) id) {
-    return request.user;
-  }
-*/
   @Post('password')
   public async changePassword(@Request() request, @Param('id') id: string) {
     return request.user;
@@ -50,13 +39,6 @@ export class UsersController {
   public async getAllUsers() {
     return this.usersService.findAll();
   }
-/*
-  @Post()
-  @UsePipes(new ValidationPipe())
-  public async addUser(@Body('user') user) {
-    return this.usersService.add(user);
-  }
-*/
 
   @Get(':id')
   //  @Roles('admin')

@@ -17,11 +17,14 @@ import * as helmet from 'helmet';
     key: fs.readFileSync('./certs/key.pem'),
     cert: fs.readFileSync('./certs/cert.pem'),
   };
+
   const corsOptions = {
-    origin: ['http://localhost:4200', 'https://localhost:4200'],
+    // origin: ['http://localhost:4200', 'https://localhost:4200', 'https://login.microsoftonline.com', 'http://localhost:3000', 'https://localhost:3000'],
     optionsSuccessStatus: 200,
+    origin: true,
     credentials: true,
   };
+
   const expressInstance = express();
 
 //  const app2 = await NestFactory.create(ApplicationModule);

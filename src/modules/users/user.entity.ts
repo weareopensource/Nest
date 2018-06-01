@@ -20,6 +20,9 @@ export class User {
   @ObjectIdColumn()
   id: ObjectID;
 
+  @Column({ nullable: false })
+  sub: string;
+
   @Column({ nullable: true })
   firstName: string;
 
