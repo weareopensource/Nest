@@ -35,7 +35,7 @@
     "passport-azure-ad": "^3.0.12",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
-    "pg": "latest",
+    "pg": "^7.4.3",
     "redis": "latest",
     "reflect-metadata": "latest",
     "rxjs": "latest",
@@ -58,6 +58,7 @@
     "@types/node": "^8.0.46",
     "@types/passport": "^0.4.5",
     "@types/valid-url": "^1.0.2",
+    "debug": "^3.1.0",
     "nodemon": "^1.12.1",
     "ts-node": "^3.3.0"
   }

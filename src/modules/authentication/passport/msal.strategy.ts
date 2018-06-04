@@ -1,12 +1,12 @@
 import OIDCStrategy from './passport-azure-ad';
-import { UsersService } from '../../users/users.service';
+import { UserService } from '../../user';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { isEmpty } from 'lodash';
 
 @Injectable()
 export class MsalStrategy extends PassportStrategy(OIDCStrategy as any) {
-  constructor(private readonly usersService: UsersService) {
+  constructor(private readonly _userService: UserService) {
     super({
       // Required
       // identityMetadata: 'https://login.microsoftonline.com/<tenant_name>.onmicrosoft.com/v2.0/.well-known/openid-configuration',
@@ -81,7 +81,7 @@ export class MsalStrategy extends PassportStrategy(OIDCStrategy as any) {
 
   // tslint:disable-next-line:ban-types
   public async validate(token: any, done: Function) {
-    let user = await this.usersService.findOneBySub(token.sub);
+    let user = await this._userService.findOneBySub(token.sub);
     if (isEmpty(user)) {
       user = {
         provider: 'microsoft',

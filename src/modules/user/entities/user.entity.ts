@@ -7,20 +7,20 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   BaseEntity,
-  ObjectIdColumn,
-  ObjectID,
+  PrimaryGeneratedColumn,
+  BeforeInsert,
 } from 'typeorm';
-import { Task } from '../tasks/task.entity';
-import { Role } from '../roles/role.entity';
+import { Task } from '../../tasks';
+import { Role } from './role.entity';
 import { Moment } from 'moment';
 
 @Entity()
 export class User {
 
-  @ObjectIdColumn()
-  id: ObjectID;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   sub: string;
 
   @Column({ nullable: true })
@@ -33,40 +33,34 @@ export class User {
   email: string;
 
   @Column({
+    name: 'password_digest',
     select: false,
     nullable: true,
   })
   passwordDigest: string;
-/*
-  @ManyToMany(type => Role)
+
+  @ManyToMany(type => Role, role => role.users, {
+    cascade: false,
+  })
   @JoinTable()
-  */
-  @Column({ nullable: false })
-  roleIds: ObjectID[];
+  roles: Role[];
 
-  @Column({ nullable: false })
-  provider: string;
+  @Column({ nullable: true })
+  provider: string = 'local';
 
-  @Column({ nullable: false })
-  profileImageURL: string;
+  @Column({ nullable: true })
+  profileImageURL: string = '/assets/ic_profile.png';
 
   @CreateDateColumn({
+    name: 'created_date',
     select: false,
-    nullable: true,
   })
   createdDate: Moment;
 
   @UpdateDateColumn({
+    name: 'updated_date',
     select: false,
-    nullable: true,
   })
   updatedDate: Moment;
-/*
-  @OneToMany(type => Task, (task: Task) => task.user, {
-    //      cascadeInsert: true,
-    //      cascadeUpdate: true,
-  })
-  tasks: ObjectID[];
-*/
 
 }

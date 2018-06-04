@@ -1,8 +1,8 @@
-import { TaskDto } from './task.dto';
+import { TaskDto } from '../models/task.dto';
 import { Middleware, NestMiddleware, HttpStatus, Injectable } from '@nestjs/common';
 import { HttpException } from '@nestjs/common';
-import { TasksService } from './tasks.service';
-import { Task } from './task.entity';
+import { TasksService } from '../services/tasks.service';
+import { Task } from '../entities/task.entity';
 
 @Injectable()
 export class TaskFindMiddleware implements NestMiddleware {

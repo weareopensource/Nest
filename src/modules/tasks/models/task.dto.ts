@@ -5,7 +5,7 @@ export class TaskDto {
 
   @ApiModelProperty()
 //  @IsInt()
-  readonly id?: string;
+  readonly id?: number;
 
   @ApiModelProperty()
   @IsString()

@@ -1,5 +1,6 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 import { IsString, IsInt, IsArray } from 'class-validator';
+import { User } from '../entities/user.entity';
 
 export class UserDto {
   @ApiModelProperty()
@@ -22,3 +23,11 @@ export class UserDto {
   @IsArray()
   readonly roles?: string[];
 }
+
+export const toUserDto = (user: User) => {
+  const userDto: any = { ...user };
+  delete userDto.passwordDigest;
+  delete userDto.roles;
+  userDto.roles = user.roles.map(role => role.name);
+  return userDto;
+};

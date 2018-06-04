@@ -1,16 +1,22 @@
 import { Module, NestModule, RequestMethod, MiddlewareConsumer, OnModuleInit } from '@nestjs/common';
-import { TasksController, TasksService, TaskFindMiddleware, Task } from './';
+import { TaskController } from './controllers/task.controller';
+import { TaskService } from './services/task.service';
+import { TaskFindMiddleware } from './middlewares/task.find.middleware';
+import { Task } from './entities/task.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from '../user';
+import { TaskByIdPipe } from './pipes/task-by-id.pipe';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Task]),
   ],
   controllers: [
-    TasksController,
+    TaskController,
   ],
   providers: [
-    TasksService,
+    TaskService,
+    TaskByIdPipe,
   ],
 })
 export class TaskModule /* implements NestModule */ {

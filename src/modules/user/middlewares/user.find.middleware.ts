@@ -1,13 +1,13 @@
-import { UserDto } from './user.dto';
+import { UserDto } from '../models/user.dto';
 import { Middleware, NestMiddleware, HttpStatus, Injectable } from '@nestjs/common';
 import { HttpException } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { User } from './user.entity';
+import { UserService } from '../services/user.service';
+import { User } from '../entities/user.entity';
 
 @Injectable()
 export class UserFindMiddleware implements NestMiddleware {
 
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly _userService: UserService) { }
 
   resolve() {
     return async (req, res, next) => {

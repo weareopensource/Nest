@@ -9,17 +9,15 @@ import {
     UpdateDateColumn,
     BaseEntity,
     JoinColumn,
-    ObjectIdColumn,
-    ObjectID,
 } from 'typeorm';
-import { User } from '../users/user.entity';
+import { User } from '../../user';
 import { Moment } from 'moment';
 
 @Entity()
 export class Task {
 
-  @ObjectIdColumn()
-  id: ObjectID;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column({ nullable: true })
   title: string;
@@ -37,6 +35,9 @@ export class Task {
   })
   updatedDate: Moment;
 
-  @ObjectIdColumn()
-  userId: ObjectID;
+  @ManyToOne(type => User)
+  user: User;
+
+  @Column({ nullable: true })
+  userId: number;
 }

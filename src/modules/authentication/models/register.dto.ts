@@ -5,17 +5,17 @@ export class RegisterDto {
 
   @ApiModelProperty()
   @IsString()
-  readonly firstName?: string;
+  readonly firstName: string;
 
   @ApiModelProperty()
   @IsString()
-  readonly lastName?: string;
+  readonly lastName: string;
 
   @ApiModelProperty()
   @IsString()
-  readonly email?: string;
+  readonly email: string;
 
   @ApiModelProperty()
   @IsString()
-  readonly password?: string;
+  readonly password: string;
 }

@@ -55,6 +55,6 @@ import * as helmet from 'helmet';
   app.init();
 
 //  await https.createServer(httpsOptions, expressInstance).listen(3000);
-  await http.createServer(expressInstance).listen(3000);
+  await http.createServer(expressInstance).listen(process.env.PORT);
 
 })();
