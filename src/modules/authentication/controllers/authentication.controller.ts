@@ -23,14 +23,14 @@ import { toUserDto } from '../../user';
 @ApiUseTags('authentication')
 export class AuthenticationController {
 
-  constructor(private authService: AuthenticationService) {}
+  constructor(private _authenticationService: AuthenticationService) {}
 
   @Post('signin')
   @UseGuards(AuthGuard('local'))
-  public async login(@Req() request, @Res() response, @Body(new ValidationPipe({ transform: true })) credentials: LoginDto) {
+  public async login(@Req() request, @Res() response, @Body(new ValidationPipe()) credentials: LoginDto) {
 
     const user = toUserDto(request.user);
-    const token = this.authService.createToken(user);
+    const token = this._authenticationService.createToken(user);
     const tokenExpiresIn = JSON.parse(new Buffer(token.split('.')[1], 'base64').toString('ascii')).exp;
 
     return response
@@ -46,13 +46,13 @@ export class AuthenticationController {
 
   @Post('signup')
   // @UsePipes()
-  public async register(@Res() response, @Body(new ValidationPipe({ transform: true })) registerDto: RegisterDto) {
+  public async register(@Res() response, @Body(new ValidationPipe()) registerDto: RegisterDto) {
     // console.log(JSON.stringify(request.csrfToken()));
     // csurf({ cookie: true });
 
-    const user = toUserDto(await this.authService.register(registerDto));
+    const user = toUserDto(await this._authenticationService.register(registerDto.firstName, registerDto.lastName, registerDto.email, registerDto.password));
 
-    const token = this.authService.createToken(user);
+    const token = this._authenticationService.createToken(user);
     const tokenExpiresIn = JSON.parse(new Buffer(token.split('.')[1], 'base64').toString('ascii')).exp;
     return response
       .cookie('_token', token, { maxAge: 900000, httpOnly: true, secure: true })
@@ -79,6 +79,6 @@ export class AuthenticationController {
 @Post('microsoft')
   @UseGuards(AuthGuard('azuread-openidconnect'))
   public async microsoftLogin(@Req() request) {
-    console.log('user', request.user);
+//    console.log('user', request.user);
   }
 }

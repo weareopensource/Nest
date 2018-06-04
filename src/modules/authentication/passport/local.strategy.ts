@@ -3,10 +3,11 @@ import { UserService } from '../../user';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { verify } from 'argon2';
+import { AuthenticationService } from '../services/authentication.service';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-  constructor(private readonly _userService: UserService) {
+  constructor(private readonly _authenticationService: AuthenticationService) {
     super({
       usernameField: 'email',
     });
@@ -14,13 +15,8 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 
   // tslint:disable-next-line:ban-types
   public async validate(email: string, password: string, done: Function): Promise<void> {
-    // onsole.log('sdfsdfsdfsdf');
-    const user = await this._userService.findOneByEmail(email);
-    const isPasswordValid = await verify(user.passwordDigest, password);
-    if (!isPasswordValid) {
-      done(new UnauthorizedException('Invalid password'), false);
-    } else {
-      done(false, user);
-    }
+
+    const user = await this._authenticationService.validate(email, password);
+    done(false, user);
   }
 }

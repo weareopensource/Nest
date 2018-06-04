@@ -21,8 +21,8 @@ export class TaskService {
     return (await this._taskRepository).save(taskEntity);
   }
 
-  public async findOne(taskId: number, userId: number): Promise<any> {
-    return (await this._taskRepository).findOneOrFail({ id: taskId, userId});
+  public async findOne(taskId: number): Promise<any> {
+    return (await this._taskRepository).findOneOrFail({ id: taskId });
   }
 
   public async update(update: any): Promise<any> {

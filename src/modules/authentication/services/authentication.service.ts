@@ -1,6 +1,6 @@
 import { User, UserService } from '../../user';
 import { Repository } from 'typeorm';
-import { Injectable, forwardRef, Inject } from '@nestjs/common';
+import { Injectable, forwardRef, Inject, UnauthorizedException } from '@nestjs/common';
 import { HttpException } from '@nestjs/common';
 import { hash } from 'argon2';
 import { sign, SignOptions, verify } from 'jsonwebtoken';
@@ -19,29 +19,27 @@ const EXPIRES_IN = 24 * 60 * 60;
 export class AuthenticationService {
   constructor(private readonly _userService: UserService) {}
 
-  public async validate(credentials: LoginDto): Promise<any> {
-
-    console.log('credentials', credentials);
-
+  public async validate(email: string, password: string): Promise<any> {
+/*
     if (!credentials.email) {
       throw new HttpException('Email is required', 422);
     }
     if (!credentials.password) {
       throw new HttpException('Password is required', 422);
     }
+*/
+    const user = await this._userService.findOneByEmail(email);
 
-    const user = await this._userService.findOneByEmail(credentials.email).catch(console.log);
-
-    const isPasswordValid = await verifyArgon2(user.passwordDigest, credentials.password);
+    const isPasswordValid = await verifyArgon2(user.passwordDigest, password);
 
     if (!isPasswordValid) {
-      throw new HttpException('Password is invalid', 422);
+      throw new UnauthorizedException('Invalid password');
     }
 
     return user;
   }
 
-  public async register({ firstName, lastName, email, password }: RegisterDto) {
+  public async register(firstName: string, lastName: string, email: string, password: string) {
       const passwordDigest = await hash(password);
       return this._userService.save({ firstName, lastName, email, passwordDigest });
   }

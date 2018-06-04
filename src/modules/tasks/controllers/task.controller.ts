@@ -1,7 +1,7 @@
 import { ForbiddenException } from '../../common/exceptions/forbidden.exception';
 import { ValidationPipe } from '../../common/pipes/validation.pipe';
 import { Roles } from '../../common/decorators/roles.decorator';
-import { TaskDto } from '../models/task.dto';
+import { TaskDto, toTaskDto } from '../models/task.dto';
 import { Response } from 'express';
 import { Controller, Get, Post, Request, Param, Body, Put, Delete, UseGuards, UsePipes, Patch, HttpException } from '@nestjs/common';
 import { Service } from '../../common/service.interface';
@@ -23,9 +23,8 @@ export class TaskController {
 
   @Post()
 //  @Roles('admin')
-//  @UsePipes(new ValidationPipe())
   @UseGuards(AuthGuard('jwt'))
-  public async addTask(@Request() request: any, @Body() task: TaskDto) {
+  public async addTask(@Request() request: any, @Body(new ValidationPipe()) task: TaskDto) {
     return this._taskService.insert(task, request.user.id);
   }
 
@@ -37,9 +36,10 @@ export class TaskController {
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
-  public async getTask(@Param('id', TaskByIdPipe) taskEntity: Task, @Request() request): Promise<TaskDto> {
-    if (taskEntity.userId === request.user.id) {
-      return taskEntity as any;
+  public getTask(@Param('id', TaskByIdPipe) taskEntity: Task, @Request() request): TaskDto {
+    const currentUserId = request.user.id;
+    if (taskEntity.userId === currentUserId) {
+      return toTaskDto(taskEntity);
     } else {
       throw new HttpException('404', 404);
     }
@@ -58,7 +58,7 @@ export class TaskController {
   @Put(':id')
   @UseGuards(AuthGuard('jwt'))
 //  @UsePipes(new ValidationPipe())
-  public async replaceTask(@Param('id', TaskByIdPipe) taskEntity: Task, @Request() request, @Body() taskDto: TaskDto) {
+  public async replaceTask(@Param('id', TaskByIdPipe) taskEntity: Task, @Request() request, @Body(new ValidationPipe()) taskDto: TaskDto) {
     if (taskEntity.userId === request.user.id) {
       return this._taskService.update(taskDto);
     } else {
