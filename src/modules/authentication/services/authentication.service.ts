@@ -28,7 +28,10 @@ export class AuthenticationService {
       throw new HttpException('Password is required', 422);
     }
 */
+    console.log('sdfjsdkf');
     const user = await this._userService.findOneByEmail(email);
+
+    console.log('User', user, email);
 
     const isPasswordValid = await verifyArgon2(user.passwordDigest, password);
 
@@ -40,8 +43,8 @@ export class AuthenticationService {
   }
 
   public async register(firstName: string, lastName: string, email: string, password: string) {
-      const passwordDigest = await hash(password);
-      return this._userService.save({ firstName, lastName, email, passwordDigest });
+    const passwordDigest = await hash(password);
+    return this._userService.save({ firstName, lastName, email, passwordDigest });
   }
 
   public createToken(user: any) {

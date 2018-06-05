@@ -17,7 +17,7 @@ export class TaskService {
   public async insert(task: TaskDto, userId: number): Promise<any> {
     const taskEntity = (await this._taskRepository).create();
     Object.assign(taskEntity, task);
-    taskEntity.userId = userId;
+    taskEntity.userId = userId.toString();
     return (await this._taskRepository).save(taskEntity);
   }
 
@@ -34,6 +34,6 @@ export class TaskService {
   }
 
   public async find(userId: number): Promise<any> {
-    return (await this._taskRepository).find({ userId });
+    return (await this._taskRepository).find({ userId: userId.toString() });
   }
 }

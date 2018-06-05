@@ -5,6 +5,7 @@ import { UserModule } from '../user/user.module';
 // import * as csurf from 'csurf';
 import { TaskModule } from '../tasks/tasks.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       logger: 'debug',
       synchronize: true,
     }),
+    MongooseModule.forRoot('mongodb://localhost/nestdev'),
     CommonModule,
     UserModule,
     AuthenticationModule,

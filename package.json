@@ -57,6 +57,7 @@
     "@types/jsonwebtoken": "^7.2.3",
     "@types/jws": "^3.1.0",
     "@types/lodash": "^4.14.109",
+    "@types/mongoose": "^5.0.15",
     "@types/node": "^8.0.46",
     "@types/passport": "^0.4.5",
     "@types/valid-url": "^1.0.2",

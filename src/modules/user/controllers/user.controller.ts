@@ -5,7 +5,7 @@ import { UserDto } from '../models/user.dto';
 import { Response } from 'express';
 import { Controller, Get, Post, Request, Param, Body, Put, Delete, UseGuards, UsePipes } from '@nestjs/common';
 import { Service } from '../../common/service.interface';
-import { User } from '../entities/user.entity';
+import { User } from '../interfaces/user.interface';
 import { UserService } from '../services/user.service';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { ApiUseTags } from '@nestjs/swagger';
@@ -49,8 +49,8 @@ export class UserController {
 
   @Put(':id')
   @UseGuards(AuthGuard('jwt'))
-  public async updateUser(@Param('id') userEntity: User, @Request() request: any, @Body() userDto: UserDto) {
-    return this._userService.update(userEntity, userDto);
+  public async updateUser(@Param('id') userDoc: User, @Request() request: any, @Body() userDto: UserDto) {
+    return this._userService.update(userDoc, userDto);
   }
 
   @Delete(':id')

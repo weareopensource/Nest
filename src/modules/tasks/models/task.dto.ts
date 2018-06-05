@@ -18,7 +18,7 @@ export class TaskDto {
 
   @ApiModelProperty()
   @IsInt()
-  readonly userId?: number;
+  readonly userId?: string;
 }
 
 export const toTaskDto = (taskEntity: Task): TaskDto => {

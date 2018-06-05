@@ -1,6 +1,6 @@
 import { PipeTransform, Injectable, ArgumentMetadata, HttpStatus, BadRequestException } from '@nestjs/common';
 import { UserService } from '../services/user.service';
-import { User } from '../entities/user.entity';
+import { User } from '../interfaces/user.interface';
 
 @Injectable()
 export class UserByIdPipe implements PipeTransform<string, Promise<User>> {

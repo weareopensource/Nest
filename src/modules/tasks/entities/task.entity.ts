@@ -35,9 +35,6 @@ export class Task {
   })
   updatedDate: Moment;
 
-  @ManyToOne(type => User)
-  user: User;
-
   @Column({ nullable: true })
-  userId: number;
+  userId: string;
 }

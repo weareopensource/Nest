@@ -9,8 +9,6 @@ export class TaskByIdPipe implements PipeTransform<string, Promise<Task>> {
 
   async transform(taskId: string, metadata: ArgumentMetadata): Promise<Task> {
 
-    console.log('ssdfsdfsdfsdfsdf');
-
     if (!taskId) {
       throw new HttpException({ error: 'Parameter is required' }, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -19,7 +17,7 @@ export class TaskByIdPipe implements PipeTransform<string, Promise<Task>> {
     if (isNaN(id)) {
       throw new BadRequestException('Validation failed');
     }
-    console.log('ssdfsdfsdfsdfsdf');
+
     const task = await this._taskService.findOne(id);
     if (!task) {
       throw new HttpException('Task not found', HttpStatus.NOT_FOUND);
