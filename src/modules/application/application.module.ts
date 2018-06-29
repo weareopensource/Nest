@@ -6,9 +6,11 @@ import { UserModule } from '../user/user.module';
 import { TaskModule } from '../tasks/tasks.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigurationModule, ConfigurationService } from '../configuration';
 
 @Module({
   imports: [
+    ConfigurationModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -29,4 +31,8 @@ import { MongooseModule } from '@nestjs/mongoose';
     TaskModule,
   ],
 })
-export class ApplicationModule {}
+export class ApplicationModule {
+  constructor(private config: ConfigurationService) {
+    console.log(config);
+  }
+}
