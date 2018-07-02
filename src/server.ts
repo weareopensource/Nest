@@ -31,10 +31,10 @@ import * as helmet from 'helmet';
 //  await app2.listen(3001);
 
   const app = await NestFactory.create(ApplicationModule, expressInstance);
+  app.enableCors(corsOptions);
   app.setGlobalPrefix('/api');
   app.disable('x-powered-by');
   app.use(helmet());
-  app.use(cors(corsOptions));
   app.use(bodyParser.json({limit: '50mb'}));
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe());
@@ -48,13 +48,12 @@ import * as helmet from 'helmet';
     .addTag('authentication')
     .addTag('users')
     .addTag('tasks')
-    .addTag('medias')
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/swagger', app, document);
   app.init();
 
 //  await https.createServer(httpsOptions, expressInstance).listen(3000);
-  await http.createServer(expressInstance).listen(process.env.PORT);
+  await http.createServer(expressInstance).listen(process.env.WAOS_BACK_port);
 
 })();
