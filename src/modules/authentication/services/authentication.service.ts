@@ -28,10 +28,8 @@ export class AuthenticationService {
       throw new HttpException('Password is required', 422);
     }
 */
-    console.log('sdfjsdkf');
-    const user = await this._userService.findOneByEmail(email);
 
-    console.log('User', user, email);
+    const user = await this._userService.findOneByEmail(email);
 
     const isPasswordValid = await verifyArgon2(user.passwordDigest, password);
 

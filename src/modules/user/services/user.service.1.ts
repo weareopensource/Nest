@@ -34,12 +34,13 @@ export class UserService {
   public async save(user: any): Promise< any> {
     const userDoc = new (this._userModel)(user);
     const roleDoc = await this._roleModel.findOne({ name: 'user' });
-    userDoc.roles = [roleDoc._id];
-    return userDoc.save().then(doc => doc.populate({ path: 'roles' }).execPopulate());
+    userDoc.roles = [roleDoc.id];
+    return userDoc.save()
+    .then(({ id, firstName, lastName, email, roles, profileImageURL }) => ({ id, firstName, lastName, email, roles, profileImageURL }));
   }
 
   public async findOne(userId: number): Promise<any > {
-    return this._userModel.findOne({ _id: userId }).populate('roles');
+    return this._userModel.findOne({ id: userId });
   }
 
   public async findOneByEmail(email: string): Promise < any > {

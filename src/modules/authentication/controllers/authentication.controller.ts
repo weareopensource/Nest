@@ -29,11 +29,11 @@ export class AuthenticationController {
   @UseGuards(AuthGuard('local'))
   public async login(@Req() request, @Res() response, @Body(new ValidationPipe()) credentials: LoginDto) {
 
-    const user = toUserDto(request.user);
-    const token = this._authenticationService.createToken(user);
-    const tokenExpiresIn = JSON.parse(new Buffer(token.split('.')[1], 'base64').toString('ascii')).exp;
+  const user = toUserDto(request.user);
+  const token = this._authenticationService.createToken(user);
+  const tokenExpiresIn = JSON.parse(new Buffer(token.split('.')[1], 'base64').toString('ascii')).exp;
 
-    return response
+  return response
     .cookie('TOKEN', token, {
     //      maxAge: 1900000,
       httpOnly: true,
@@ -50,9 +50,7 @@ export class AuthenticationController {
     // console.log(JSON.stringify(request.csrfToken()));
     // csurf({ cookie: true });
 
-    const user = await this._authenticationService.register(registerDto.firstName, registerDto.lastName, registerDto.email, registerDto.password);
-
-    console.log(user);
+    const user = toUserDto(await this._authenticationService.register(registerDto.firstName, registerDto.lastName, registerDto.email, registerDto.password));
 
     const token = this._authenticationService.createToken(user);
     const tokenExpiresIn = JSON.parse(new Buffer(token.split('.')[1], 'base64').toString('ascii')).exp;

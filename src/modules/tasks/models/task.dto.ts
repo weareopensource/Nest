@@ -1,27 +1,31 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-import { IsString, IsInt, IsDate, IsArray } from 'class-validator';
+import { IsString } from 'class-validator';
 import { Task } from '../entities/task.entity';
 
 export class TaskDto {
 
   @ApiModelProperty()
-  @IsInt()
-  readonly id: number;
+  @IsString()
+  readonly id?: number;
 
   @ApiModelProperty()
   @IsString()
-  readonly title: string;
+  readonly title?: string;
 
   @ApiModelProperty()
   @IsString()
-  readonly description: string;
+  readonly description?: string;
 
   @ApiModelProperty()
-  @IsInt()
+  @IsString()
   readonly userId?: string;
 }
 
-export const toTaskDto = (taskEntity: Task): TaskDto => {
-  const taskDto = { ...taskEntity } as TaskDto;
-  return taskDto;
+export const toTaskDto = (taskEntity: any): TaskDto => {
+  const taskDto = taskEntity.toObject({ getters: true });
+  delete taskDto._id;
+  delete taskDto.__v;
+  delete taskDto.createdDate;
+  delete taskDto.updatedDate;
+  return taskDto as TaskDto;
 };

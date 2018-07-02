@@ -1,6 +1,7 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 import { IsString, IsInt, IsArray } from 'class-validator';
 import { User } from '../interfaces/user.interface';
+import { Model } from 'mongoose';
 
 export class UserDto {
   @ApiModelProperty()
@@ -24,10 +25,11 @@ export class UserDto {
   readonly roles?: string[];
 }
 
-export const toUserDto = (user: User) => {
-  const userDto: any = { ...user };
+export const toUserDto = (user: any) => {
+  const userDto: any = user.toObject({ getters: true });
   delete userDto.passwordDigest;
-  delete userDto.roles;
-  userDto.roles = user.roles.map(role => role.name);
+  delete userDto._id;
+  delete userDto.__v;
+  userDto.roles = userDto.roles.map(role => role.name);
   return userDto;
 };

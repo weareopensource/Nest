@@ -13,11 +13,11 @@ import { ConfigurationModule, ConfigurationService } from '../configuration';
     ConfigurationModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT),
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
+      host: process.env.WAOS_BACK_db_host,
+      port: Number(process.env.WAOS_BACK_db_port),
+      username: process.env.WAOS_BACK_db_username,
+      password: process.env.WAOS_BACK_db_password,
+      database: process.env.WAOS_BACK_db_name,
       entities: [`${__dirname}/../**/*.entity.ts`],
       subscribers: [`${__dirname}/../**/*.subscriber.ts`],
       logging: true,
@@ -31,8 +31,4 @@ import { ConfigurationModule, ConfigurationService } from '../configuration';
     TaskModule,
   ],
 })
-export class ApplicationModule {
-  constructor(private config: ConfigurationService) {
-    console.log(config);
-  }
-}
+export class ApplicationModule { }

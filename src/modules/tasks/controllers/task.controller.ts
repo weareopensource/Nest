@@ -5,7 +5,7 @@ import { TaskDto, toTaskDto } from '../models/task.dto';
 import { Response } from 'express';
 import { Controller, Get, Post, Request, Param, Body, Put, Delete, UseGuards, UsePipes, Patch, HttpException } from '@nestjs/common';
 import { Service } from '../../common/service.interface';
-import { Task } from '../entities/task.entity';
+import { Task } from '../interfaces/task.interface';
 import { TaskService } from '../services/task.service';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { ApiUseTags } from '@nestjs/swagger';
@@ -24,22 +24,21 @@ export class TaskController {
   @Post()
 //  @Roles('admin')
   @UseGuards(AuthGuard('jwt'))
-  public async addTask(@Request() request: any, @Body(new ValidationPipe()) task: TaskDto) {
-    return this._taskService.insert(task, request.user.id);
+  public async addTask(@Request() request: any, @Body() task: any) {
+    return toTaskDto(await this._taskService.insert(task, request.user.id));
   }
 
   @Get('me')
   @UseGuards(AuthGuard('jwt'))
-  public async getUserTasks(@Request() request): Promise<TaskDto[]> {
-    return this._taskService.find(request.user.id);
+  public async getUserTasks(@Request() request): Promise<Array<any>> {
+    return (await this._taskService.find(request.user.id)).map(toTaskDto);
   }
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
-  public getTask(@Param('id', TaskByIdPipe) taskEntity: Task, @Request() request): TaskDto {
-    const currentUserId = request.user.id;
-    if (taskEntity.userId === currentUserId) {
-      return toTaskDto(taskEntity);
+  public getTask(@Param('id', TaskByIdPipe) task: Task, @Request() request): TaskDto {
+    if (task.user.toString() === request.user.id) {
+      return toTaskDto(task);
     } else {
       throw new HttpException('404', 404);
     }
@@ -47,19 +46,19 @@ export class TaskController {
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'))
-  public async deleteTask(@Param('id', TaskByIdPipe) taskEntity: Task, @Request() request): Promise<TaskDto> {
-    if (taskEntity.userId === request.user.id) {
-      return this._taskService.delete(taskEntity.id);
+  public async deleteTask(@Param('id', TaskByIdPipe) task: Task, @Request() request): Promise<any> {
+    if (task.user.toString() === request.user.id) {
+      return toTaskDto(await this._taskService.delete(task.id));
     } else {
-      throw new HttpException('404', 404);
+      throw new HttpException('401', 401);
     }
   }
 
   @Put(':id')
   @UseGuards(AuthGuard('jwt'))
 //  @UsePipes(new ValidationPipe())
-  public async replaceTask(@Param('id', TaskByIdPipe) taskEntity: Task, @Request() request, @Body(new ValidationPipe()) taskDto: TaskDto) {
-    if (taskEntity.userId === request.user.id) {
+  public async replaceTask(@Param('id') taskEntity: Task, @Request() request, @Body() taskDto: TaskDto) {
+    if (taskEntity.user === request.user.id) {
       return this._taskService.update(taskDto);
     } else {
       throw new HttpException('404', 404);
@@ -68,8 +67,8 @@ export class TaskController {
 
   @Patch(':id')
 //  @UsePipes(new ValidationPipe())
-  public async updateTask(@Param('id', TaskByIdPipe) taskEntity: Task, @Request() request, @Body('id') id: number, @Body('changes') changes: any) {
-    if (taskEntity.userId === request.user.id) {
+  public async updateTask(@Param('id') taskEntity: Task, @Request() request, @Body('id') id: number, @Body('changes') changes: any) {
+    if (taskEntity.user === request.user.id) {
       return this._taskService.update(changes);
     } else {
       throw new HttpException('404', 404);

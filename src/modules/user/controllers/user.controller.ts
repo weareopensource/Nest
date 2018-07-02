@@ -35,7 +35,7 @@ export class UserController {
     return request.user;
   }
 
-  @Get('')
+  @Get()
   // @Roles('admin')
   public async getAllUsers() {
     return this._userService.findAll();
