@@ -36,9 +36,9 @@ export class TaskController {
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
-  public getTask(@Param('id', TaskByIdPipe) task: Task, @Request() request): TaskDto {
-    if (task.user.toString() === request.user.id) {
-      return toTaskDto(task);
+  public getTask(@Param('id', TaskByIdPipe) taskEntity: Task, @Request() request): TaskDto {
+    if (taskEntity.user.toString() === request.user.id) {
+      return toTaskDto(taskEntity);
     } else {
       throw new HttpException('404', 404);
     }
@@ -46,9 +46,9 @@ export class TaskController {
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'))
-  public async deleteTask(@Param('id', TaskByIdPipe) task: Task, @Request() request): Promise<any> {
-    if (task.user.toString() === request.user.id) {
-      return toTaskDto(await this._taskService.delete(task.id));
+  public async deleteTask(@Param('id', TaskByIdPipe) taskEntity: Task, @Request() request): Promise<any> {
+    if (taskEntity.user.toString() === request.user.id) {
+      return this._taskService.delete(taskEntity.id);
     } else {
       throw new HttpException('401', 401);
     }
@@ -56,23 +56,11 @@ export class TaskController {
 
   @Put(':id')
   @UseGuards(AuthGuard('jwt'))
-//  @UsePipes(new ValidationPipe())
-  public async replaceTask(@Param('id') taskEntity: Task, @Request() request, @Body() taskDto: TaskDto) {
-    if (taskEntity.user === request.user.id) {
-      return this._taskService.update(taskDto);
-    } else {
-      throw new HttpException('404', 404);
+  public async updateTask(@Param('id', TaskByIdPipe) taskEntity: Task, @Request() request, @Body() taskDto: any): Promise<any> {
+    if ((taskEntity.id === taskDto.id) && (taskEntity.user.toString() === request.user.id)) {
+      return this._taskService.update(taskEntity.id, taskDto);
     }
-  }
-
-  @Patch(':id')
-//  @UsePipes(new ValidationPipe())
-  public async updateTask(@Param('id') taskEntity: Task, @Request() request, @Body('id') id: number, @Body('changes') changes: any) {
-    if (taskEntity.user === request.user.id) {
-      return this._taskService.update(changes);
-    } else {
-      throw new HttpException('404', 404);
-    }
+    throw new HttpException('401', 401);
   }
 }
 

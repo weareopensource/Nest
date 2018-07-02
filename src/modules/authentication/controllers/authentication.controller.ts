@@ -27,7 +27,7 @@ export class AuthenticationController {
 
   @Post('signin')
   @UseGuards(AuthGuard('local'))
-  public async login(@Req() request, @Res() response, @Body(new ValidationPipe()) credentials: LoginDto) {
+  public async login(@Req() request, @Res() response) {
 
   const user = toUserDto(request.user);
   const token = this._authenticationService.createToken(user);
@@ -55,7 +55,7 @@ export class AuthenticationController {
     const token = this._authenticationService.createToken(user);
     const tokenExpiresIn = JSON.parse(new Buffer(token.split('.')[1], 'base64').toString('ascii')).exp;
     return response
-      .cookie('_token', token, { maxAge: 900000, httpOnly: true, secure: true })
+//      .cookie('_token', token, { maxAge: 900000, httpOnly: true, secure: true })
       .cookie('TOKEN', token, { /*maxAge: 900000,*/ httpOnly: true })
       .status(HttpStatus.CREATED)
       .send({ user, tokenExpiresIn });

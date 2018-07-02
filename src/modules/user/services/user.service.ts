@@ -50,14 +50,13 @@ export class UserService {
     return this._userModel.findOne({ sub }).populate('roles');
   }
 
-  public async update(userEntity: User, userDto: UserDto): Promise < any > {
-    Object.assign(userEntity, userDto);
-    return;
-    // return userEntity.save();
+  public async update(userId: string, user: UserDto): Promise < any > {
+    return this._userModel.findByIdAndUpdate(userId, user).then(() => user);
   }
 
-  public async delete(id: number): Promise < any > {
-    return this._userModel.remove({ id });
+  public async delete(userId: string): Promise < any > {
+    await this._userModel.findByIdAndRemove(userId);
+    return { userId };
   }
 
   public async findAll(): Promise < any > {

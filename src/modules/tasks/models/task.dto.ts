@@ -6,7 +6,7 @@ export class TaskDto {
 
   @ApiModelProperty()
   @IsString()
-  readonly id?: number;
+  readonly id?: string;
 
   @ApiModelProperty()
   @IsString()
@@ -27,5 +27,7 @@ export const toTaskDto = (taskEntity: any): TaskDto => {
   delete taskDto.__v;
   delete taskDto.createdDate;
   delete taskDto.updatedDate;
+  taskDto.userId = taskDto.user;
+  delete taskDto.user;
   return taskDto as TaskDto;
 };

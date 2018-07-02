@@ -13,7 +13,7 @@ import { RegisterDto } from '../models/register.dto';
 //     const verify = jwt.verify(token, publicKey);
 
 const RSA_PRIVATE_KEY = readFileSync(resolve(__dirname, '../certificates/private.key'));
-const EXPIRES_IN = 24 * 60 * 60;
+const EXPIRES_IN = Date.now() + (3600 * 24 * 1000);
 
 @Injectable()
 export class AuthenticationService {

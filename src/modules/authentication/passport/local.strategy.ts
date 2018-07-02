@@ -7,14 +7,14 @@ import { AuthenticationService } from '../services/authentication.service';
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly _authenticationService: AuthenticationService) {
     super({
-      usernameField: 'email',
+      usernameField: 'usernameOrEmail',
     });
   }
 
   // tslint:disable-next-line:ban-types
-  public async validate(email: string, password: string, done: Function): Promise<void> {
+  public async validate(usernameOrEmail: string, password: string, done: Function): Promise<void> {
 
-    const user = await this._authenticationService.validate(email, password);
+    const user = await this._authenticationService.validate(usernameOrEmail, password);
     done(false, user);
   }
 }

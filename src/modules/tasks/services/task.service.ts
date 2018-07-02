@@ -26,18 +26,18 @@ export class TaskService {
   }
 
   public async findOne(taskId: string): Promise<any> {
-    return (await this._taskModel).findOne({ _id: new ObjectId(taskId) });
+    return this._taskModel.findOne({ _id: new ObjectId(taskId) });
   }
 
-  public async update(task: any): Promise<any> {
-    return (await this._taskModel).findByIdAndUpdate(task.id, task);
+  public async update(taskId: string, task: any): Promise<any> {
+    return this._taskModel.findByIdAndUpdate(taskId, task).then(() => task);
   }
 
   public async delete(taskId: string): Promise<any> {
-    return (await this._taskModel).findByIdAndRemove(taskId);
+    return this._taskModel.findByIdAndRemove(taskId).then(task => ({ taskId: task.id }));
   }
 
   public async find(userId: string): Promise<any> {
-    return (await this._taskModel).find({ user: userId });
+    return this._taskModel.find({ user: userId });
   }
 }
