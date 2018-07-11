@@ -6,29 +6,33 @@ import { UserModule } from '../user/user.module';
 import { TaskModule } from '../tasks/tasks.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigurationModule, ConfigurationService } from '../configuration';
+import { ConfigurationModule } from '../configuration';
+import { parse } from 'dotenv';
+import { readFileSync } from 'fs';
+
+const configuration: any = parse(readFileSync(`${process.cwd()}/src/modules/configuration/defaults/${process.env.NODE_ENV}.env`));
 
 @Module({
   imports: [
     ConfigurationModule,
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.WAOS_BACK_db_host,
-      port: Number(process.env.WAOS_BACK_db_port),
-      username: process.env.WAOS_BACK_db_username,
-      password: process.env.WAOS_BACK_db_password,
-      database: process.env.WAOS_BACK_db_name,
-      entities: [`${__dirname}/../**/*.entity.ts`],
-      subscribers: [`${__dirname}/../**/*.subscriber.ts`],
-      logging: true,
-      logger: 'debug',
-      synchronize: true,
-    }),
+//    TypeOrmModule.forRoot({
+//      type: 'postgres',
+//      host: configuration.WAOS_BACK_db_host,
+//      port: Number(configuration.WAOS_BACK_db_port),
+//      username: configuration.WAOS_BACK_db_username,
+//      password: configuration.WAOS_BACK_db_password,
+//      database: configuration.WAOS_BACK_db_name,
+//      entities: [`${__dirname}/../**/*.entity.ts`],
+//      subscribers: [`${__dirname}/../**/*.subscriber.ts`],
+//      logging: true,
+//      logger: 'debug',
+//      synchronize: true,
+//    }),
     MongooseModule.forRoot('mongodb://localhost/nestdev'),
     CommonModule,
     UserModule,
     AuthenticationModule,
-    TaskModule,
+//    TaskModule,
   ],
 })
 export class ApplicationModule { }

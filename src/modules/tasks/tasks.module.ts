@@ -10,7 +10,7 @@ import { taskSchema } from './schemas/task.schema';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Task]),
+//    TypeOrmModule.forFeature([Task]),
     MongooseModule.forFeature([
       { name: 'task', schema: taskSchema },
     ]),

@@ -23,7 +23,7 @@ export class UserController {
   @Get('me')
   @UseGuards(AuthGuard('jwt'))
   public async getCurrentUser(@Request() request) {
-    return { user: request.user };
+    return toUserDto(request.user);
   }
 
   @Post('password')

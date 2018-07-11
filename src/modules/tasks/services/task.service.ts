@@ -13,8 +13,8 @@ import { ObjectId } from 'mongodb';
 export class TaskService {
 
   constructor(
-    @InjectRepository(Task)
-    private readonly _taskRepository: Repository<Task>,
+//    @InjectRepository(Task)
+//    private readonly _taskRepository: Repository<Task>,
     @InjectModel('task')
     private readonly _taskModel: Model<any>,
   ) { }

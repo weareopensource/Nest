@@ -6,7 +6,7 @@ import { APP_PIPE } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RoleSchema } from './schemas/role.schema';
 import { UserSchema } from './schemas/user.schema';
-import * as ac from 'accesscontrol';
+// import * as ac from 'accesscontrol';
 
 @Module({
   imports: [
@@ -22,9 +22,10 @@ import * as ac from 'accesscontrol';
     UserService,
     UserByIdPipe,
 //    UserSchemaProvider,
-    { provide: 'AccessControl',
-      useClass: ac.AccessControl,
-    },
+//    {
+//      provide: 'AccessControl',
+//      useClass: ac.AccessControl,
+//    },
   ],
   exports: [ UserService ],
 })

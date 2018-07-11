@@ -19,9 +19,9 @@ export class UserService {
 //    @InjectRepository(Role)
 //    private readonly _roleRepository: Repository<Role>,
     @InjectModel('user')
-    private readonly _userModel: any,
+    private readonly _userModel: Model<any>,
     @InjectModel('role')
-    private readonly _roleModel: any,
+    private readonly _roleModel: Model<any>,
   ) { }
 
   private async _seed() {
@@ -39,7 +39,7 @@ export class UserService {
   }
 
   public async findOne(userId: number): Promise<any > {
-    return this._userModel.findOne({ _id: userId });
+    return this._userModel.findOne({ _id: userId }).populate('roles');
   }
 
   public async findOneByEmail(email: string): Promise < any > {
