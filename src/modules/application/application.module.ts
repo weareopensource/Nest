@@ -32,7 +32,7 @@ const configuration: any = parse(readFileSync(`${process.cwd()}/src/modules/conf
     CommonModule,
     UserModule,
     AuthenticationModule,
-//    TaskModule,
+    TaskModule,
   ],
 })
 export class ApplicationModule { }
