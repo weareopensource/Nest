@@ -4,14 +4,15 @@ import { UserService } from './services/user.service';
 import { UserByIdPipe } from './pipes/user-by-id.pipe';
 import { APP_PIPE } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
-import { roleSchema } from './schemas/role.schema';
-import { userSchema } from './schemas/user.schema';
+import { RoleSchema } from './schemas/role.schema';
+import { UserSchema } from './schemas/user.schema';
+import * as ac from 'accesscontrol';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: 'role', schema: roleSchema },
-      { name: 'user', schema: userSchema },
+      { name: 'user', schema: UserSchema },
+      { name: 'role', schema: RoleSchema },
     ]),
   ],
   controllers: [
@@ -20,6 +21,10 @@ import { userSchema } from './schemas/user.schema';
   providers: [
     UserService,
     UserByIdPipe,
+//    UserSchemaProvider,
+    { provide: 'AccessControl',
+      useClass: ac.AccessControl,
+    },
   ],
   exports: [ UserService ],
 })

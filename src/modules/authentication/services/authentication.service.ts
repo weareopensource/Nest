@@ -28,9 +28,7 @@ export class AuthenticationService {
       throw new HttpException('Password is required', 422);
     }
 */
-
     const user = await this._userService.findOneByEmail(email);
-
     const isPasswordValid = await verifyArgon2(user.passwordDigest, password);
 
     if (!isPasswordValid) {
@@ -51,10 +49,6 @@ export class AuthenticationService {
       expiresIn: EXPIRES_IN,
       subject: '1',
     } as SignOptions);
-  }
-
-  async validateUser(payload: any): Promise<any> {
-    return {};
   }
 
 }

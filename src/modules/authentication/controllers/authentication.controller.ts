@@ -28,12 +28,11 @@ export class AuthenticationController {
   @Post('signin')
   @UseGuards(AuthGuard('local'))
   public async login(@Req() request, @Res() response) {
+    const user = toUserDto(request.user);
+    const token = this._authenticationService.createToken(user);
+    const tokenExpiresIn = JSON.parse(new Buffer(token.split('.')[1], 'base64').toString('ascii')).exp;
 
-  const user = toUserDto(request.user);
-  const token = this._authenticationService.createToken(user);
-  const tokenExpiresIn = JSON.parse(new Buffer(token.split('.')[1], 'base64').toString('ascii')).exp;
-
-  return response
+    return response
     .cookie('TOKEN', token, {
     //      maxAge: 1900000,
       httpOnly: true,
