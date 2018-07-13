@@ -35,11 +35,12 @@ export class UserService {
     const userDoc = new (this._userModel)(user);
     const roleDoc = await this._roleModel.findOne({ name: 'user' });
     userDoc.roles = [roleDoc._id];
+    userDoc.profileImageURL = userDoc.profileImageURL ? userDoc.profileImageURL : '/assets/ic_profile.png';
     return userDoc.save().then(doc => doc.populate({ path: 'roles' }).execPopulate());
   }
 
-  public async findOne(userId: number): Promise<any > {
-    return this._userModel.findOne({ _id: userId }).populate('roles');
+  public async findOne(userId: string): Promise<any > {
+    return await this._userModel.findOne({ _id: userId }).populate('roles');
   }
 
   public async findOneByEmail(email: string): Promise < any > {
@@ -51,7 +52,8 @@ export class UserService {
   }
 
   public async update(userId: string, user: UserDto): Promise < any > {
-    return this._userModel.findByIdAndUpdate(userId, user).then(() => user);
+    const roles = (await this._roleModel.find({ name: { $in: user.roles } })).map(role => role.id);
+    return this._userModel.findByIdAndUpdate(userId, { ...user, roles }).then(() => user);
   }
 
   public async delete(userId: string): Promise < any > {

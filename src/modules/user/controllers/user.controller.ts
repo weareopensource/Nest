@@ -3,7 +3,7 @@ import { ValidationPipe } from '../../common/pipes/validation.pipe';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { UserDto, toUserDto } from '../models/user.dto';
 import { Response } from 'express';
-import { Controller, Get, Post, Request, Param, Body, Put, Delete, UseGuards, UsePipes, HttpException } from '@nestjs/common';
+import { Controller, Get, Post, Request, Param, Body, Put, Delete, UseGuards, UsePipes, HttpException, Patch } from '@nestjs/common';
 import { Service } from '../../common/service.interface';
 import { User } from '../interfaces/user.interface';
 import { UserService } from '../services/user.service';
@@ -48,8 +48,8 @@ export class UserController {
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
   //  @Roles('admin')
-  public async getUser(@Param('id') id: number) {
-    return this._userService.findOne(id);
+  public async getUser(@Param('id') id: string) {
+    return this._userService.findOne(id).then(user => toUserDto(user));
   }
 
   @Put(':id')
