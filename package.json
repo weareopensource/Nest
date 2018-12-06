@@ -23,7 +23,7 @@
     "body-parser": "latest",
     "cache-manager": "^2.9.0",
     "class-transformer": "latest",
-    "class-validator": "latest",
+    "class-validator": "0.9.0",
     "cookie-parser": "latest",
     "cors": "latest",
     "cross-env": "latest",
