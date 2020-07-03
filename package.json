@@ -21,7 +21,7 @@
     "argon2": "^0.19.2",
     "async": "^2.6.1",
     "base64url": "^3.0.0",
-    "bcrypt": "^2.0.1",
+    "bcrypt": "^5.0.0",
     "body-parser": "latest",
     "cache-manager": "^2.9.0",
     "class-transformer": "latest",
