@@ -34,7 +34,7 @@
     "joi": "^13.4.0",
     "jsonwebtoken": "latest",
     "jwk-to-pem": "^2.0.0",
-    "lodash": "latest",
+    "lodash": "4.17.20",
     "moment": "^2.22.1",
     "mongodb": "^3.1.0-beta4",
     "mongoose": "^5.1.4",
