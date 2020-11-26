@@ -51,7 +51,7 @@
     "typeorm": "0.2.15",
     "typescript": "latest",
     "valid-url": "^1.0.9",
-    "snyk": "^1.319.1"
+    "snyk": "^1.425.4"
   },
   "devDependencies": {
     "@types/base64url": "^2.0.0",
