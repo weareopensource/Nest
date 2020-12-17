@@ -15,7 +15,7 @@
     "@nestjs/core": "latest",
     "@nestjs/mongoose": "^5.0.0",
     "@nestjs/passport": "^1.0.10",
-    "@nestjs/swagger": "latest",
+    "@nestjs/swagger": "4.6.0",
     "@nestjs/typeorm": "^3.0.0",
     "accesscontrol": "^2.2.1",
     "argon2": "^0.19.2",
