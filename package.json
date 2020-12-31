@@ -11,7 +11,7 @@
     "prepare": "npm run snyk-protect"
   },
   "dependencies": {
-    "@nestjs/common": "latest",
+    "@nestjs/common": "7.6.5",
     "@nestjs/core": "latest",
     "@nestjs/mongoose": "^5.0.0",
     "@nestjs/passport": "^1.0.10",
