@@ -48,7 +48,7 @@
     "redis": "latest",
     "reflect-metadata": "latest",
     "rxjs": "latest",
-    "typeorm": "0.2.15",
+    "typeorm": "0.2.25",
     "typescript": "latest",
     "valid-url": "^1.0.9",
     "snyk": "^1.319.1"
